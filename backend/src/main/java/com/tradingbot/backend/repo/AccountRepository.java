@@ -15,6 +15,14 @@ public class AccountRepository {
     public AccountRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
+    
+    public BigDecimal getCashBalance(long accountId) {
+    return jdbc.queryForObject(
+        "SELECT cash_balance FROM account WHERE id = ?",
+        BigDecimal.class,
+        accountId
+    );
+}
 
     public BigDecimal getCashBalanceForUpdate(long accountId) {
         return jdbc.queryForObject(
@@ -35,5 +43,9 @@ public class AccountRepository {
         "SELECT id, cash_balance, created_at FROM account WHERE id = ?",
         accountId
     );
+}
+
+public int resetCash(long accountId, BigDecimal cash) {
+    return jdbc.update("UPDATE account SET cash_balance = ? WHERE id = ?", cash, accountId);
 }
 }

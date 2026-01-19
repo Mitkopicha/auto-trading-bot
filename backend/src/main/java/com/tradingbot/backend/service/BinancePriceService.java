@@ -31,6 +31,9 @@ public class BinancePriceService {
         }
     }
 
+
+   
+
  
     public List<BigDecimal> getHistoricalCloses(String symbol, String interval, int limit) {
         try {
