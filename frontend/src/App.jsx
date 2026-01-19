@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getAccount, getPortfolio, getTrades, runStep, runTrain, resetAccount, trainStep } from "./services/api";
 import EquityChart from "./components/EquityChart";
 import { createEquitySnapshot, getEquitySnapshots } from "./services/api";
+import PriceChart from "./components/PriceChart";
+import { getCandles } from "./services/api";
 
 
 
@@ -26,8 +28,18 @@ function App() {
   const [trainLimit, setTrainLimit] = useState(200);
   const [isTrainingRunning, setIsTrainingRunning] = useState(false);
   const [snapshots, setSnapshots] = useState([]);
+  const [candles, setCandles] = useState([]);
+
+
+
+  async function loadCandles() {
+  const data = await getCandles(symbol, 100, "1m");
+  setCandles(data);
+}
 
   async function refresh() {
+    await loadCandles();
+
     setError("");
     const [a, p, t] = await Promise.all([
       getAccount(accountId),
@@ -37,6 +49,7 @@ function App() {
     setAccount(a);
     setPortfolio(p);
     setTrades(t);
+    
   }
   async function loadSnapshots() {
   const data = await getEquitySnapshots(accountId, mode, 200);
@@ -162,6 +175,12 @@ useEffect(() => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [isRunning, intervalSec, mode]);
 
+
+  useEffect(() => {
+    loadCandles().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbol, mode]);
+
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
       <h1>Trading Bot Dashboard</h1>
@@ -263,6 +282,8 @@ useEffect(() => {
   <button onClick={takeSnapshot} style={{ marginRight: 10 }}>Take Snapshot</button>
   <button onClick={loadSnapshots}>Reload</button>
 </div>
+<h2 style={{ marginTop: 20 }}>Price Chart (with trades)</h2>
+<PriceChart candles={candles} trades={trades} />
 
 <EquityChart snapshots={snapshots} />
 

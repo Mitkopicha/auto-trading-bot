@@ -65,4 +65,9 @@ export async function getEquitySnapshots(accountId, mode, limit = 200) {
   return res.json();
 }
 
+export async function getCandles(symbol, limit = 100, interval = "1m") {
+  const res = await fetch(`${API_BASE}/market/candles?symbol=${symbol}&limit=${limit}&interval=${interval}`);
+  if (!res.ok) throw new Error("Failed to fetch candles");
+  return res.json();
+}
 
