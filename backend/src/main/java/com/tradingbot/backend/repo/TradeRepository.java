@@ -38,4 +38,7 @@ public class TradeRepository {
         accountId
     );
 }
-}   
+public int deleteTradesForAccount(long accountId) {
+    return jdbc.update("DELETE FROM trade WHERE account_id = ?", accountId);
+}
+}

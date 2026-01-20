@@ -87,4 +87,7 @@ public int deleteIfZero(long accountId, String symbol) {
         accountId, symbol
     );
 }
+public int deletePortfolioForAccount(long accountId) {
+    return jdbc.update("DELETE FROM portfolio WHERE account_id = ?", accountId);
 }
+}   

@@ -35,4 +35,11 @@ public class EquitySnapshotRepository {
                 accountId, mode, limit
         );
     }
+
+    public int deleteSnapshotsForAccount(long accountId) {
+        return jdbc.update(
+                "DELETE FROM equity_snapshot WHERE account_id = ?",
+                accountId
+        );
+    }
 }
