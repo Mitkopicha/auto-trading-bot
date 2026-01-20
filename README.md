@@ -137,9 +137,9 @@ http://localhost:5173
 
 ## ScreenShots 
 Trading mode 
-<img width="940" height="527" alt="Screenshot 1" src="https://github.com/user-attachments/assets/978549c9-5e4a-4e98-b707-908a5493b99d" />
-<img width="675" height="460" alt="Screenshot 2" src="https://github.com/user-attachments/assets/f2ec6ee3-0c4b-4ce3-a697-ccbdec74625a" />
 <img width="1919" height="1057" alt="image" src="https://github.com/user-attachments/assets/66e8694c-2621-4b0d-b1c5-74e5a3334b7e" />
+<img width="675" height="460" alt="Screenshot 2" src="https://github.com/user-attachments/assets/f2ec6ee3-0c4b-4ce3-a697-ccbdec74625a" />
+
 
 Training mode 
 <img width="1873" height="1031" alt="image" src="https://github.com/user-attachments/assets/8f3c6940-6da0-4f66-8bbe-a3d835bc32a7" />
