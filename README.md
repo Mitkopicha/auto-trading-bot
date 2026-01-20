@@ -1,42 +1,63 @@
-Auto Trading Bot – Take-Home Task
+<h1 align="center">Auto Trading Bot — Take-Home Task</h1>
 
-A simple web application that simulates an automated crypto trading bot.
+<p align="center">A simple web application that simulates an automated crypto trading bot. All trades are simulated — no real money is used.</p>
 
-The bot supports:
+---
 
-- Training mode (backtesting on historical price data)
-- Trading mode (live simulation using current market prices)
+## Table of contents
 
-All trades are simulated only — no real money is used.
+- [Overview](#overview)
+- [Tech stack](#tech-stack)
+- [Features](#features)
+- [Dashboard](#dashboard)
+- [Project structure](#project-structure)
+- [Setup](#setup)
+  - [Database (MariaDB)](#database-mariadb)
+  - [Backend](#backend)
+  - [Frontend](#frontend)
+- [How to run](#how-to-run)
+- [Notes](#notes)
 
-Tech Stack
+---
 
-Frontend: React + Vite (HTML, CSS, JavaScript)
+## Overview
 
-Backend: Java, Spring Boot (raw JDBC, no ORM)
+This repository contains a minimal web application that demonstrates an automated crypto trading bot. It supports two operating modes:
 
-Database: MariaDB
+- Training mode — backtesting on historical price data
+- Trading mode — live simulation using current market prices
 
-Market Data: Binance public REST API
+All activity is simulated; no real funds are used.
 
-Features
+## Tech stack
+
+| Layer     | Technology                      |
+|----------:|:--------------------------------|
+| Frontend  | React + Vite (HTML, CSS, JS)    |
+| Backend   | Java, Spring Boot (raw JDBC)    |
+| Database  | MariaDB                         |
+| Market    | Binance public REST API         |
+
+## Features
 
 - Training (backtest) and Trading (live simulation) modes
 - Automated trading logic based on market indicators
-- Tracks:
+- Tracking of:
   - Account balance
   - Portfolio holdings
   - Trade history
   - Equity over time
 
-Dashboard includes:
+## Dashboard
 
 - Price chart with BUY / SELL markers
-- Trade history table with PnL
+- Trade history table with profit & loss (PnL)
 - Portfolio summary
 - Controls to start, pause, reset, and switch modes
 
-Project Structure
+## Project structure
+
+```
 trading_bot_212/
 ├── README.md
 ├── db/
@@ -44,67 +65,72 @@ trading_bot_212/
 │   └── seed.sql
 ├── backend/
 └── frontend/
+```
 
-Database Setup (MariaDB)
+## Setup
 
-Make sure MariaDB is running locally.
+### Database (MariaDB)
 
+1. Ensure MariaDB is running locally.
+2. Create the database:
+
+```sql
 CREATE DATABASE trading_bot_212;
+```
 
+3. From the project root, load schema and seed data:
 
-From the project root, load the schema and seed data:
-
+```bash
 mysql -u root -p trading_bot_212 < db/schema.sql
 mysql -u root -p trading_bot_212 < db/seed.sql
+```
 
-Backend Setup
+### Backend
 
-Edit database credentials in:
-
-backend/src/main/resources/application.properties
-
+1. Edit database credentials in `backend/src/main/resources/application.properties`.
 
 Example:
 
+```
 spring.datasource.url=jdbc:mariadb://localhost:3306/trading_bot_212
 spring.datasource.username=root
 spring.datasource.password=your_password
+```
 
+2. Run the backend:
 
-Run the backend:
-
+```bash
 cd backend
 ./mvnw spring-boot:run
+```
 
-
-Backend runs on:
+The backend will be available at:
 
 http://localhost:8080
 
-Frontend Setup
+### Frontend
+
+1. Install dependencies and start the dev server:
+
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-
-Frontend runs on:
+The frontend will be available at:
 
 http://localhost:5173
 
-How to Run
+## How to run
 
-Start MariaDB and load the database.
+1. Start MariaDB and load the database.
+2. Start the backend service.
+3. Start the frontend dev server.
+4. Open the dashboard in your browser and select Training or Trading mode.
 
-Run the backend.
+## Notes
 
-Run the frontend.
-
-Open the dashboard and use Training or Trading mode.
-
-Notes
-
-Uses raw SQL (JDBC) — no ORM.
-
-Binance API is public and does not require an API key.
-
-Designed for clarity and simplicity for a take-home task.
+- The backend uses raw SQL (JDBC) and does not use an ORM.
+- Binance public REST API is used for market data and does not require an API key for public endpoints.
+- The project is designed for clarity and simplicity as a take-home task.
