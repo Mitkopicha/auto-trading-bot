@@ -143,4 +143,6 @@ Trading mode
 
 Training mode 
 <img width="1873" height="1031" alt="image" src="https://github.com/user-attachments/assets/8f3c6940-6da0-4f66-8bbe-a3d835bc32a7" />
+<img width="1887" height="1066" alt="image" src="https://github.com/user-attachments/assets/b333fa85-69f4-42dc-a76b-7d296fc75dc5" />
+
 
