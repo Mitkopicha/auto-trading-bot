@@ -248,19 +248,38 @@ button:disabled{
   text-align:right;
 }
 
-.controlsLayout{
-  display: grid;
-  grid-template-columns: 360px 1fr; /* slightly wider left panel */
-  gap: 18px;
-  align-items: center;            /* key: vertically align */
+
+/* Controls card spacing */
+.controlsCard{
+  padding: 18px;
 }
 
+/* Make "Controls" proportional (not huge) */
+.controlsTitle{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text);
+}
+
+/* Two columns: left panel + right panel */
+.controlsLayout{
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+/* Left stack */
 .controlsLeft{
   display:flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* Right stack */
 .controlsRight{
   display:flex;
   flex-direction: column;
@@ -268,44 +287,20 @@ button:disabled{
   min-width: 0;
 }
 
-/* THIS is the important part */
+/* This row: center selector + right actions */
 .controlsActionsRow{
   display: grid;
-  grid-template-columns: 1fr auto; /* symbol takes leftover space, buttons stay right */
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   width: 100%;
 }
 
-.controlsRowLeft{
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.controlsSymbol{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.controlsSymbol input{
-  width: 240px;          /* makes the row look filled */
-  max-width: 100%;
-}
-
-.controlsRowRight{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
-  flex-wrap: wrap;       /* prevents overflow */
-}
-
+/* Mode tabs: match height of other controls */
 .modeTabs{
   display:flex;
-  gap: 8px;
-  padding: 6px;
+  gap: 10px;
+  padding: 8px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: #0f131b;
@@ -317,16 +312,108 @@ button:disabled{
 }
 
 .tab{
-  padding: 12px 18px;
+  height: 44px;
+  min-width: 120px;
+  padding: 0 18px;
   font-size: 14px;
   font-weight: 800;
   border-radius: 12px;
   border: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
 }
 
 .tab.active{
   border: 1px solid var(--border);
   background: var(--card);
+  color: var(--text);
+}
+
+.tab:hover:not(.active){
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Center symbol block */
+.controlsRowLeft{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 0;
+}
+
+.controlsSymbol{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.controlsSymbolLabel{
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.controlsSymbol select{
+  height: 44px;
+  min-width: 160px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* Right actions: consistent heights */
+.controlsRowRight{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  justify-content:flex-end;
+  flex-wrap: nowrap;
+}
+
+.primaryBtn{
+  height: 44px;
+  padding: 0 22px;
+  font-weight: 900;
+  border: 2px solid #e7eaf0;
+  background: transparent;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.primaryBtn:hover{
+  background: rgba(230, 234, 240, 0.1);
+}
+
+.dangerBtn{
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid #7a2d2d;
+  background: #1a0f12;
+  color: #ff6b6b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dangerBtn:hover{
+  background: #2a1515;
 }
 
 .iconBtn{
@@ -335,18 +422,39 @@ button:disabled{
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size: 18px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 12px;
 }
 
-.primaryBtn{
-  padding: 10px 16px;
-  font-weight: 900;
-  border: 2px solid #e7eaf0;
+.iconBtn:hover{
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.dangerBtn{
-  border: 1px solid #7a2d2d;
-  background: #1a0f12;
+/* Mobile */
+@media (max-width: 900px){
+  .controlsLayout{
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .controlsActionsRow{
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .controlsRowLeft{
+    justify-content:flex-start;
+  }
+
+  .controlsRowRight{
+    justify-content:flex-start;
+    flex-wrap: wrap;
+  }
 }
+
 
 .settingsPanel{
   border-top: 1px solid var(--border);
