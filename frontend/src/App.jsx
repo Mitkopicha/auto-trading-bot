@@ -389,11 +389,11 @@ export default function App() {
       </div>
 
       {/* CONTROLS CARD */}
-      <div className="card" style={{ marginBottom: 16 }}>
+      <div className="card controlsCard" style={{ marginBottom: 16 }}>
         <div className="controlsLayout">
           {/* LEFT */}
           <div className="controlsLeft">
-            <h1 style={{ margin: 0 }}>Controls</h1>
+            <h2 className="controlsTitle">Controls</h2>
 
             <div className="modeTabs underTitle">
               <button
@@ -412,106 +412,97 @@ export default function App() {
           </div>
 
           {/* RIGHT */}
-<div className="controlsRight">
-  <div className="controlsTopRow">
-    <div className="controlsActionsRow">
-  <div className="controlsRowLeft">
-    <label className="small controlsSymbol">
-      <span className="controlsSymbolLabel">Symbol</span>
-      <select value={symbol} onChange={(e) => setSymbol(e.target.value)}>
-    {SYMBOLS.map((s) => (
-      <option key={s} value={s}>
-        {s}
-      </option>
-    ))}
-  </select>
-</label>
+          <div className="controlsRight">
+            <div className="controlsActionsRow">
+              {/* CENTER */}
+              <div className="controlsRowLeft">
+                <label className="controlsSymbol">
+                  <span className="controlsSymbolLabel">Choose your cryptocurrency</span>
+                  <select value={symbol} onChange={(e) => setSymbol(e.target.value)}>
+                    {SYMBOLS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
 
-  </div>
+              {/* RIGHT */}
+              <div className="controlsRowRight">
+                <button className="primaryBtn" onClick={togglePrimary}>
+                  {primaryLabel}
+                </button>
 
-  <div className="controlsRowRight">
-    <button className="primaryBtn" onClick={togglePrimary} style={{ padding: "14px 24px", fontSize: "16px", fontWeight: "900" }}>
-      {primaryLabel}
-    </button>
+                <button className="dangerBtn" onClick={handleReset}>
+                  Reset
+                </button>
 
-    {showSettings && (
-      <button onClick={handleStep} disabled={mode !== "TRADING" || isRunning}>
-        Step
-      </button>
-    )}
+                <button
+                  className="iconBtn"
+                  onClick={() => setShowSettings((v) => !v)}
+                  title="Settings"
+                >
+                  ⚙️
+                </button>
+              </div>
+            </div>
 
-    <button className="dangerBtn" onClick={handleReset}>
-      Reset
-    </button>
+            {mode === "TRAINING" && (
+              <div className="trainingRow">
+                <div className="trainingLeft">
+                  <div className="trainingProgressLabel">
+                    Progress: <strong>{progressNow}</strong> / {safeLimit} ({progressPct}%)
+                  </div>
+                  <div className="trainingProgressTrack">
+                    <div
+                      className="trainingProgressFill"
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                </div>
 
-    <button
-      className="iconBtn"
-      onClick={() => setShowSettings((v) => !v)}
-      title="Settings"
-    >
-      ⚙️
-    </button>
-  </div>
-</div>
+                <div className="trainingRight">
+                  <label className="small">
+                    Training data size (candles):&nbsp;
+                    <input
+                      type="number"
+                      min="50"
+                      value={trainLimit}
+                      onChange={(e) => setTrainLimit(Number(e.target.value))}
+                    />
+                  </label>
 
-  </div>
+                  <button onClick={handleTrainOnce}>Run Backtest (once)</button>
+                </div>
+              </div>
+            )}
 
-  {mode === "TRAINING" && (
-    <div className="trainingRow">
-      <div className="trainingLeft">
-        <div className="trainingProgressLabel">
-          Progress: <strong>{progressNow}</strong> / {safeLimit} ({progressPct}%)
-        </div>
-        <div className="trainingProgressTrack">
-          <div
-            className="trainingProgressFill"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-      </div>
+            {showSettings && (
+              <div className="settingsPanel">
+                {mode === "TRADING" && (
+                  <label className="small">
+                    Auto interval (sec):&nbsp;
+                    <input
+                      type="number"
+                      min="1"
+                      value={intervalSec}
+                      onChange={(e) => setIntervalSec(Number(e.target.value))}
+                    />
+                  </label>
+                )}
 
-      <div className="trainingRight">
-        <label className="small">
-          Training data size (candles):&nbsp;
-          <input
-            type="number"
-            min="50"
-            value={trainLimit}
-            onChange={(e) => setTrainLimit(Number(e.target.value))}
-          />
-        </label>
-
-        <button onClick={handleTrainOnce}>Run Backtest (once)</button>
-      </div>
-    </div>
-  )}
-
-  {showSettings && (
-    <div className="settingsPanel">
-      {mode === "TRADING" && (
-        <label className="small">
-          Auto interval (sec):&nbsp;
-          <input
-            type="number"
-            min="1"
-            value={intervalSec}
-            onChange={(e) => setIntervalSec(Number(e.target.value))}
-          />
-        </label>
-      )}
-
-      {mode === "TRAINING" && (
-        <div className="small" style={{ color: "var(--muted)" }}>
-          Advanced: the training pointer is managed automatically.
-        </div>
-      )}
-    </div>
-  )}
-</div>
+                {mode === "TRAINING" && (
+                  <div className="small" style={{ color: "var(--muted)" }}>
+                    Advanced: the training pointer is managed automatically.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-          
 
       {/* MAIN GRID */}
       <div className="grid">
@@ -525,9 +516,9 @@ export default function App() {
               <div>
                 <div className="chartTitleRow">
                   <span className="chartSymbol">{symbol}</span>
-                  <span className="chartMetaDot">•</span>
+                  <span className="chartMetaDot"></span>
                   <span className="chartMeta">{CANDLE_INTERVAL} candles</span>
-                  <span className="chartMetaDot">•</span>
+                  <span className="chartMetaDot"></span>
                   <span className="chartMeta">Last {CANDLE_LIMIT} {CANDLE_INTERVAL === "1m" ? "minutes" : "candles"}</span>
                 </div>
                 <div className="chartSub">
@@ -536,8 +527,8 @@ export default function App() {
               </div>
 
               <div className="chartLegend">
-                <span className="legendPill buy">● Buy</span>
-                <span className="legendPill sell">● Sell</span>
+                <span className="legendPill buy">Buy</span>
+                <span className="legendPill sell">Sell</span>
               </div>
             </div>
             <PriceChart candles={candles} trades={trades} />
@@ -546,7 +537,7 @@ export default function App() {
           <div className="card">
             <div className="cardTopRow">
               <h2>Equity</h2>
-              <span className="cardMeta">{`Last ${snapshots.length} snapshots • Captured on each step`}</span>
+              <span className="cardMeta">{`Last ${snapshots.length} snapshots ~ Captured on each step`}</span>
             </div>
 
             <div className="equityMetaRow">
