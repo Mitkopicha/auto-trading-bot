@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
-
+// portfolio repository handles database operations related to portfolios
+// it uses JdbcTemplate for database interactions
+// it includes methods to upsert buys, reduce positions on sells, and retrieve portfolio information
+// it also includes methods to delete positions and check for existing positions
 @Repository
 public class PortfolioRepository {
 

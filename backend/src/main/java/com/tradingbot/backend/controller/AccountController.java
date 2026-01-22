@@ -1,5 +1,6 @@
 package com.tradingbot.backend.controller;
-
+// account controller handles retrieval of account information
+// it includes an endpoint to get account details by account ID
 import com.tradingbot.backend.repo.AccountRepository;
 import org.springframework.web.bind.annotation.*;
 

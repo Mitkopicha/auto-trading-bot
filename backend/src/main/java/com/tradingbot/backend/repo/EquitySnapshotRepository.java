@@ -1,5 +1,8 @@
 package com.tradingbot.backend.repo;
-
+// equity snapshot repository handles database operations related to equity snapshots
+// it uses JdbcTemplate for database interactions
+// it includes methods to insert a snapshot, get snapshots for an account and mode, and delete snapshots for an account
+// each snapshot includes account ID, mode, timestamp, cash balance, portfolio value, and total equity
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

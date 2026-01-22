@@ -1,5 +1,9 @@
 package com.tradingbot.backend.repo;
-
+// account repository handles database operations related to accounts
+// including retrieval and updating of cash balances and account details
+// it uses JdbcTemplate for database interactions
+// it includes methods to get cash balance, update cash balance, get account details, and reset cash
+// for a given account ID 
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

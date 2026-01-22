@@ -1,5 +1,6 @@
 package com.tradingbot.backend.controller;
-
+// reset controller handles account reset functionality
+// it includes an endpoint to reset an account by account ID
 import com.tradingbot.backend.service.ResetService;
 import org.springframework.web.bind.annotation.*;
 

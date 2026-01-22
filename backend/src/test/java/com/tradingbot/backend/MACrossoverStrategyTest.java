@@ -1,5 +1,7 @@
 package com.tradingbot.backend;
-
+// unit tests for MACrossoverStrategy
+// tests include scenarios for buy and sell signals based on moving average crossovers
+// uses JUnit 5 for testing framework
 import org.junit.jupiter.api.Test;
 
 import com.tradingbot.backend.service.MACrossoverStrategy;

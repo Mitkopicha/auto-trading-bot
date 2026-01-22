@@ -1,5 +1,6 @@
 package com.tradingbot.backend.controller;
-
+// equity controller handles equity snapshot endpoints 
+// and retrieval of equity snapshots for accounts 
 import com.tradingbot.backend.service.EquityService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,5 +1,7 @@
 package com.tradingbot.backend.controller;
-
+// bot controller handles trading and training endpoints
+// for the trading bot using MACrossoverStrategy
+// it includes endpoints for ping, trading steps, and training steps
 import com.tradingbot.backend.service.BotService;
 import com.tradingbot.backend.service.MACrossoverStrategy;
 import org.springframework.web.bind.annotation.*;

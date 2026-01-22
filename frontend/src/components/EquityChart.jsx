@@ -1,5 +1,9 @@
 import React from "react";
-
+// EquityChart component renders an SVG line chart of equity snapshots over time
+// it displays the equity values, grid lines, and time labels on the x-axis
+// it highlights the start and end points of the equity line
+// it requires at least 2 snapshots to render the chart
+// each snapshot should have a timestamp and total_equity value
 function formatTimeShort(timestamp) {
   if (!timestamp) return "";
   try {

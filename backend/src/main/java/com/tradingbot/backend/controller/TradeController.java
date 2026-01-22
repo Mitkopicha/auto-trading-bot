@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
+// trade controller handles retrieval of trade information
+// it includes an endpoint to get trades by account ID
 @RestController
 @RequestMapping("/api")
 

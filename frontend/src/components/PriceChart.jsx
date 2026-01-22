@@ -1,5 +1,9 @@
 import React from "react";
-
+// PriceChart component renders an SVG line chart of price candles over time
+// it displays the closing prices, grid lines, and time labels on the x-axis
+// it marks trade events (buy/sell) on the chart with dots
+// it requires at least 2 candles to render the chart
+// each candle should have a timestamp and close price
 function formatTimeHM(tsMs) {
   if (!tsMs) return "";
   const d = new Date(tsMs);

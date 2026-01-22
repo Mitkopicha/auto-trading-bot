@@ -1,5 +1,7 @@
 package com.tradingbot.backend.repo;
-
+// trade repository handles database operations related to trades
+// it uses JdbcTemplate for database interactions
+// it includes methods to insert trades, retrieve trades for an account, delete trades, and get
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
