@@ -23,41 +23,79 @@ public class BotService {
         this.tradeService = tradeService;
     }
 
-    // ===== TRADING MODE =====
-    public MACrossoverStrategy.Signal runTradingStep(long accountId, String symbol) {
 
-        List<BinancePriceService.Candle> candles = priceService.getCandles(symbol, "1m", 200, 0);
-        if (candles == null || candles.size() < 21) return MACrossoverStrategy.Signal.HOLD;
 
-        List<BigDecimal> closes = new ArrayList<>();
-        for (var c : candles) closes.add(c.close);
 
-        // live price update for responsiveness
-        BigDecimal live = priceService.getLatestPrice(symbol);
+
+
+
+
+
+
+
+
+
+
+/// ===== TRADING MODE =====
+public MACrossoverStrategy.Signal runTradingStep(long accountId, String symbol) {
+
+    // 1) get candles
+    List<BinancePriceService.Candle> candles = priceService.getCandles(symbol, "1m", 120, 0);
+    if (candles == null || candles.size() < 30) return MACrossoverStrategy.Signal.HOLD;
+
+    List<BigDecimal> closes = new ArrayList<>(candles.size());
+    for (var c : candles) closes.add(c.close);
+
+    // 2) use candle timestamp so dot aligns with chart immediately
+    Long candleTs = candles.get(candles.size() - 1).timestamp;
+
+    // 3) optionally replace last candle close with latest price (more responsive)
+    BigDecimal live = priceService.getLatestPrice(symbol);
+    if (live != null && !closes.isEmpty()) {
         closes.set(closes.size() - 1, live);
-
-        // TREND signal = shortMA above/below longMA (more active than "cross" in live)
-        // epsilon=0 means no dead-zone, most active
-        MACrossoverStrategy.Signal signal = tradingStrategy.trendSignal(closes, BigDecimal.ZERO);
-
-        // cooldown prevents spam
-        long cooldownMs = 5_000;
-        if (!tradeService.isCooldownOver(accountId, symbol, "TRADING", cooldownMs)) {
-            return MACrossoverStrategy.Signal.HOLD;
-        }
-
-        boolean hasPos = tradeService.hasPosition(accountId, symbol);
-
-        // If strategy wants to BUY but we already hold, or wants to SELL but we don't hold,
-        // we still return the SIGNAL so the UI shows what the bot "wants".
-        if (signal == MACrossoverStrategy.Signal.BUY && !hasPos) {
-            tradeService.buy(accountId, symbol, live, "TRADING");
-        } else if (signal == MACrossoverStrategy.Signal.SELL && hasPos) {
-            tradeService.sell(accountId, symbol, live, "TRADING");
-        }
-
-        return signal;
+    } else {
+        live = closes.get(closes.size() - 1);
     }
+
+    // 4) TREND signal with a dead zone (0.02% band)
+    MACrossoverStrategy.Signal signal =
+            tradingStrategy.trendSignal(closes, new BigDecimal("0.0002"));
+
+    // 5) shorter cooldown so it trades more often (10 seconds)
+    long cooldownMs = 10_000;
+    if (!tradeService.isCooldownOver(accountId, symbol, "TRADING", cooldownMs)) {
+        return MACrossoverStrategy.Signal.HOLD;
+    }
+
+    // 6) position gating (prevents repeated buys/sells)
+    boolean hasPos = tradeService.hasPosition(accountId, symbol);
+
+    if (signal == MACrossoverStrategy.Signal.BUY && !hasPos) {
+        tradeService.buyAtTimestamp(accountId, symbol, live, "TRADING", candleTs);
+    } else if (signal == MACrossoverStrategy.Signal.SELL && hasPos) {
+        tradeService.sellAtTimestamp(accountId, symbol, live, "TRADING", candleTs);
+    }
+
+    return signal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ===== TRAINING MODE =====
 
@@ -131,10 +169,10 @@ public class BotService {
     }
 
     public TrainingStepResult runTrainingStepWithCloses(long accountId,
-                                                        String symbol,
-                                                        List<BigDecimal> closes,
-                                                        List<Long> candleTimestamps,
-                                                        int index) {
+                                                       String symbol,
+                                                       List<BigDecimal> closes,
+                                                       List<Long> candleTimestamps,
+                                                       int index) {
 
         if (index < 21) index = 21;
 

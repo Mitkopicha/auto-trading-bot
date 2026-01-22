@@ -16,6 +16,12 @@ public class MACrossoverStrategy {
     }
 
     public MACrossoverStrategy(int shortWindow, int longWindow) {
+        if (shortWindow <= 0) throw new IllegalArgumentException("shortWindow must be > 0");
+        if (longWindow <= 0) throw new IllegalArgumentException("longWindow must be > 0");
+        if (shortWindow >= longWindow) {
+            // Not required, but prevents weird configs like 20/5
+            throw new IllegalArgumentException("shortWindow must be < longWindow");
+        }
         this.shortWindow = shortWindow;
         this.longWindow = longWindow;
     }
@@ -41,9 +47,18 @@ public class MACrossoverStrategy {
         return Signal.HOLD;
     }
 
-    // Trend-following (better for live stepping; does not require a perfect cross)
+    /**
+     * Trend-following (better for live stepping; does not require a perfect cross).
+     * BUY when shortMA > longMA
+     * SELL when shortMA < longMA
+     *
+     * epsilonPct can be used as a "dead zone" to reduce whipsaw:
+     * example: 0.001 = 0.1% band
+     */
     public Signal trendSignal(List<BigDecimal> closes, BigDecimal epsilonPct) {
         if (closes == null) return Signal.HOLD;
+
+        // Need enough candles for BOTH MAs at the last index
         if (closes.size() < longWindow) return Signal.HOLD;
 
         int last = closes.size() - 1;
@@ -51,8 +66,7 @@ public class MACrossoverStrategy {
         BigDecimal shortNow = sma(closes, last, shortWindow);
         BigDecimal longNow  = sma(closes, last, longWindow);
 
-        // optional “dead zone” to reduce whipsaw:
-        // if short and long are extremely close, HOLD.
+        // optional dead zone
         if (epsilonPct != null && epsilonPct.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal diff = shortNow.subtract(longNow).abs();
             BigDecimal threshold = longNow.abs().multiply(epsilonPct);
@@ -66,9 +80,19 @@ public class MACrossoverStrategy {
     }
 
     private BigDecimal sma(List<BigDecimal> closes, int endIndex, int window) {
+        if (closes == null) return BigDecimal.ZERO;
+        if (window <= 0) return BigDecimal.ZERO;
+        if (endIndex < 0 || endIndex >= closes.size()) return BigDecimal.ZERO;
+
         int start = endIndex - window + 1;
+        if (start < 0) return BigDecimal.ZERO; // safety guard
+
         BigDecimal sum = BigDecimal.ZERO;
-        for (int i = start; i <= endIndex; i++) sum = sum.add(closes.get(i));
+        for (int i = start; i <= endIndex; i++) {
+            BigDecimal v = closes.get(i);
+            if (v == null) v = BigDecimal.ZERO;
+            sum = sum.add(v);
+        }
         return sum.divide(BigDecimal.valueOf(window), 8, RoundingMode.HALF_UP);
     }
 }

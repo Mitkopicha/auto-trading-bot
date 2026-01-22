@@ -26,23 +26,34 @@ public class TradeService {
     }
 
     @Transactional
-    public void buy(long accountId, String symbol, BigDecimal price, String mode) {
-        BigDecimal cash = accountRepo.getCashBalanceForUpdate(accountId);
+public void buy(long accountId, String symbol, BigDecimal price, String mode) {
+    BigDecimal cash = accountRepo.getCashBalanceForUpdate(accountId);
+    if (cash == null || cash.compareTo(BigDecimal.ZERO) <= 0) return;
+    if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) return;
 
-        BigDecimal spend = cash.multiply(new BigDecimal("0.10"));
-        if (spend.compareTo(BigDecimal.ZERO) <= 0) return;
-        if (price.compareTo(BigDecimal.ZERO) <= 0) return;
+    // Default: 10% of available cash
+    BigDecimal spend = cash.multiply(new BigDecimal("0.10"));
 
-        BigDecimal qty = spend.divide(price, 8, RoundingMode.DOWN);
-        if (qty.compareTo(BigDecimal.ZERO) <= 0) return;
+    // ✅ Demo floor: force trades to remain visible (prevents qty rounding to 0)
+    BigDecimal minSpend = new BigDecimal("25.00"); // $25 minimum trade size
+    if (spend.compareTo(minSpend) < 0) spend = minSpend;
 
-        tradeRepo.insertTrade(accountId, mode, symbol, "BUY", qty, price, null, null);
+    // Can't spend more than we have
+    if (cash.compareTo(spend) < 0) return;
 
-        BigDecimal newCash = cash.subtract(spend);
-        accountRepo.updateCashBalance(accountId, newCash);
+    BigDecimal qty = spend.divide(price, 8, RoundingMode.DOWN);
 
-        portfolioRepo.upsertBuy(accountId, symbol, qty, price);
-    }
+    // ✅ Safety floor: if rounding makes qty zero, skip (avoids meaningless trades)
+    BigDecimal minQty = new BigDecimal("0.00001000");
+    if (qty.compareTo(minQty) < 0) return;
+
+    tradeRepo.insertTrade(accountId, mode, symbol, "BUY", qty, price, null, null);
+
+    BigDecimal newCash = cash.subtract(spend);
+    accountRepo.updateCashBalance(accountId, newCash);
+
+    portfolioRepo.upsertBuy(accountId, symbol, qty, price);
+}
 
     @Transactional
     public void sell(long accountId, String symbol, BigDecimal price, String mode) {
@@ -60,8 +71,8 @@ public class TradeService {
         if (positionQty == null || positionQty.compareTo(BigDecimal.ZERO) <= 0) return;
         if (avgEntry == null) avgEntry = BigDecimal.ZERO;
 
-        BigDecimal sellQty = positionQty.multiply(new BigDecimal("0.10"))
-                .setScale(8, RoundingMode.DOWN);
+        BigDecimal sellQty = positionQty.setScale(8, RoundingMode.DOWN);
+                
 
         if (sellQty.compareTo(BigDecimal.ZERO) <= 0) return;
 
@@ -84,23 +95,30 @@ public class TradeService {
     // ===== Timestamp versions (used for training + trading marker alignment) =====
 
     @Transactional
-    public void buyAtTimestamp(long accountId, String symbol, BigDecimal price, String mode, Long ts) {
-        BigDecimal cash = accountRepo.getCashBalanceForUpdate(accountId);
-        BigDecimal spend = cash.multiply(new BigDecimal("0.10"));
+public void buyAtTimestamp(long accountId, String symbol, BigDecimal price, String mode, Long ts) {
+    BigDecimal cash = accountRepo.getCashBalanceForUpdate(accountId);
+    if (cash == null || cash.compareTo(BigDecimal.ZERO) <= 0) return;
+    if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) return;
 
-        if (spend.compareTo(BigDecimal.ZERO) <= 0) return;
-        if (price.compareTo(BigDecimal.ZERO) <= 0) return;
+    BigDecimal spend = cash.multiply(new BigDecimal("0.10"));
 
-        BigDecimal qty = spend.divide(price, 8, RoundingMode.DOWN);
-        if (qty.compareTo(BigDecimal.ZERO) <= 0) return;
+    BigDecimal minSpend = new BigDecimal("25.00");
+    if (spend.compareTo(minSpend) < 0) spend = minSpend;
 
-        tradeRepo.insertTradeWithTimestamp(accountId, mode, symbol, "BUY", qty, price, null, null, ts);
+    if (cash.compareTo(spend) < 0) return;
 
-        BigDecimal newCash = cash.subtract(spend);
-        accountRepo.updateCashBalance(accountId, newCash);
+    BigDecimal qty = spend.divide(price, 8, RoundingMode.DOWN);
 
-        portfolioRepo.upsertBuy(accountId, symbol, qty, price);
-    }
+    BigDecimal minQty = new BigDecimal("0.00001000");
+    if (qty.compareTo(minQty) < 0) return;
+
+    tradeRepo.insertTradeWithTimestamp(
+        accountId, mode, symbol, "BUY", qty, price, null, null, ts
+    );
+
+    accountRepo.updateCashBalance(accountId, cash.subtract(spend));
+    portfolioRepo.upsertBuy(accountId, symbol, qty, price);
+}
 
     @Transactional
     public void sellAtTimestamp(long accountId, String symbol, BigDecimal price, String mode, Long ts) {
@@ -118,8 +136,9 @@ public class TradeService {
         if (positionQty == null || positionQty.compareTo(BigDecimal.ZERO) <= 0) return;
         if (avgEntry == null) avgEntry = BigDecimal.ZERO;
 
-        BigDecimal sellQty = positionQty.multiply(new BigDecimal("0.10"))
-                .setScale(8, RoundingMode.DOWN);
+       BigDecimal sellQty = positionQty.setScale(8, RoundingMode.DOWN);
+
+
 
         if (sellQty.compareTo(BigDecimal.ZERO) <= 0) return;
 
@@ -151,4 +170,9 @@ public class TradeService {
         if (ts == null) return true;
         return (System.currentTimeMillis() - ts.getTime()) >= cooldownMillis;
     }
+
+public String getLastTradeSide(long accountId, String symbol, String mode) {
+    return tradeRepo.getLastTradeSide(accountId, mode, symbol);
+}
+
 }
