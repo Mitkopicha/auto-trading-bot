@@ -1,16 +1,23 @@
-# React + Vite
+Database Setup (MariaDB)
+Create a database: CREATE DATABASE trading_bot;
+Update database credentials in: backend/src/main/resources/application.properties
+Example:
+spring.datasource.url=jdbc:mariadb://localhost:3306/trading_bot
+spring.datasource.username=root
+spring.datasource.password=your_password
+Run the SQL schema (provided in the repo): backend/db/schema.sql
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Backend – Run Instructions
+From the backend folder:
+cd backend
+mvn spring-boot:run
+The backend will start on:
+http://localhost:8080
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Frontend – Run Instructions
+From the frontend folder:
+cd frontend
+npm install
+npm run dev
+The frontend will start on:
+http://localhost:5173
