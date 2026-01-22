@@ -244,6 +244,8 @@ Run all tests from the backend directory:
 ```bash
 ./mvnw test
 ```
+## Results
+<img width="1196" height="293" alt="image" src="https://github.com/user-attachments/assets/61fe4d8d-732e-42aa-80d1-ffd531962334" />
 
 ---
 
