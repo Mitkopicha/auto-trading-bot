@@ -22,11 +22,18 @@ public class BotController {
     }
 
     // ===== TRADING MODE =====
-    @PostMapping("/trade/step")
-    public MACrossoverStrategy.Signal tradeStep(@RequestParam long accountId,
-                                                @RequestParam String symbol) {
-        return botService.runTradingStep(accountId, symbol);
-    }
+@PostMapping("/step")
+public MACrossoverStrategy.Signal step(@RequestParam long accountId,
+                                      @RequestParam String symbol) {
+    return botService.runTradingStep(accountId, symbol);
+}
+
+@PostMapping("/trade/step")
+public MACrossoverStrategy.Signal tradeStep(@RequestParam long accountId,
+                                            @RequestParam String symbol) {
+    return botService.runTradingStep(accountId, symbol);
+}
+
 
     // ===== TRAINING MODE (batch) =====
     @PostMapping("/train")
