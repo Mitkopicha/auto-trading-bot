@@ -1,8 +1,8 @@
 
-# Auto Trading Bot — Take-Home Task
-A **simple, clean web application** that simulates an automated crypto trading bot.
-All trades are **fully simulated** — **no real money** is used.
-This project was built as a **take-home interview task**, focusing on clarity, correctness, and explainable logic rather than complexity.
+# Auto Trading Bot 
+A simple, clean web application that simulates an automated crypto trading bot.
+All trades are fully simulated no real money is used.
+This project was built as a **take home interview task**, focusing on clarity, correctness, and explainable logic rather than complexity.
 ---
 
 <img width="1670" height="1066" alt="image" src="https://github.com/user-attachments/assets/dc26af90-1833-4ad5-9a14-a42b618484f3" />
